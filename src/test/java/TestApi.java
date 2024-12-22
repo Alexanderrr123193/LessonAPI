@@ -30,7 +30,7 @@ public class TestApi {
     }
 
     @Test
-    void listUser() {
+    void listUserTest() {
         given()
                 .queryParam("page", "2")
                 .when()
@@ -41,7 +41,7 @@ public class TestApi {
     }
 
     @Test
-    void singleUser() {
+    void singleUserTest() {
         given()
                 .when()
                 .get("/user/1")
@@ -51,7 +51,7 @@ public class TestApi {
     }
 
     @Test
-    void singleUserNotFound() {
+    void singleUserNotFoundTest() {
         given()
                 .when()
                 .get("/user/100000")
@@ -61,7 +61,7 @@ public class TestApi {
     }
 
     @Test
-    void registerSuccessful() {
+    void registerSuccessfulTest() {
         given()
                 .contentType(ContentType.JSON)
                 .body("{" +
