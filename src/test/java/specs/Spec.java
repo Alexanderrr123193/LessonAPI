@@ -9,12 +9,13 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.with;
 import static io.restassured.filter.log.LogDetail.BODY;
 import static io.restassured.filter.log.LogDetail.STATUS;
+import helpers.AllureListernCustomNew;
 
 public class Spec {
 
     public static RequestSpecification requestSpec = with()
             .contentType(ContentType.JSON)
-            .filter(new AllureRestAssured())
+            .filter(AllureListernCustomNew.withCustomTemplates())
             .log().uri()
             .log().body()
             .log().headers();
