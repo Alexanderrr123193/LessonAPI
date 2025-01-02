@@ -4,14 +4,11 @@ import org.junit.jupiter.api.Test;
 import specs.Spec;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
 
-
-public class TestApi extends TestBase {
+public class ApiTests extends TestBase {
 
     @Test
     void createUserTest() {
@@ -30,27 +27,28 @@ public class TestApi extends TestBase {
         );
 
         step("Check response", () -> {
-            assertNotNull(response.getId());
+            assertThat(response.getId()).isNotNull();
         });
     }
-            @Test
-        void listUserTest() {
-            UserListResponse response = step("List users", () ->
-                    given(Spec.requestSpec)
-                            .queryParam("page", "2")
-                            .when()
-                            .get("/users")
-                            .then()
-                            .spec(Spec.responseSpecification200)
-                            .extract().as(UserListResponse.class)
-            );
 
-            step("Validate response content", () -> {
-                assertThat(response.getPage()).isEqualTo(2);
-                assertThat(response.getData()).isNotEmpty();
-                assertThat(response.getData().get(0).getEmail()).contains("@reqres.in");
-            });
-        }
+    @Test
+    void listUserTest() {
+        UserListResponse response = step("List users", () ->
+                given(Spec.requestSpec)
+                        .queryParam("page", "2")
+                        .when()
+                        .get("/users")
+                        .then()
+                        .spec(Spec.responseSpecification200)
+                        .extract().as(UserListResponse.class)
+        );
+
+        step("Validate response content", () -> {
+            assertThat(response.getPage()).isEqualTo(2);
+            assertThat(response.getData()).isNotEmpty();
+            assertThat(response.getData().get(0).getEmail()).contains("@reqres.in");
+        });
+    }
 
     @Test
     void singleUserTest() {
@@ -65,7 +63,7 @@ public class TestApi extends TestBase {
         );
 
         step("Check response", () -> {
-            assertEquals(1, response.getData().getId());
+            assertThat(response.getData().getId()).isEqualTo(1);
         });
     }
 
@@ -82,7 +80,7 @@ public class TestApi extends TestBase {
         );
 
         step("Check response", () -> {
-            assertNull(response.getData());
+            assertThat(response.getData()).isNull();
         });
     }
 
@@ -103,8 +101,8 @@ public class TestApi extends TestBase {
         );
 
         step("Check response", () -> {
-            assertEquals(4, Integer.parseInt(response.getId()));
-            assertNotNull(response.getToken());
+            assertThat(Integer.parseInt(response.getId())).isEqualTo(4);
+            assertThat(response.getToken()).isNotNull();
         });
     }
 }
