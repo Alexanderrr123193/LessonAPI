@@ -1,11 +1,15 @@
 import models.Lombok;
+import models.UserListResponse;
 import org.junit.jupiter.api.Test;
 import specs.Spec;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class TestApi extends TestBase {
 
@@ -29,19 +33,24 @@ public class TestApi extends TestBase {
             assertNotNull(response.getId());
         });
     }
+            @Test
+        void listUserTest() {
+            UserListResponse response = step("List users", () ->
+                    given(Spec.requestSpec)
+                            .queryParam("page", "2")
+                            .when()
+                            .get("/users")
+                            .then()
+                            .spec(Spec.responseSpecification200)
+                            .extract().as(UserListResponse.class)
+            );
 
-    @Test
-    void listUserTest() {
-        step("List users", () ->
-                given(Spec.requestSpec)
-                        .queryParam("page", "2")
-                        .when()
-                        .get("/users")
-                        .then()
-                        .spec(Spec.responseSpecification200)
-                        .body("page", equalTo(2))
-        );
-    }
+            step("Validate response content", () -> {
+                assertThat(response.getPage()).isEqualTo(2);
+                assertThat(response.getData()).isNotEmpty();
+                assertThat(response.getData().get(0).getEmail()).contains("@reqres.in");
+            });
+        }
 
     @Test
     void singleUserTest() {
