@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class UserResponse {
-    private UserData data;
+    private User data;
     private Support support;
 }

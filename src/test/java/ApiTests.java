@@ -26,6 +26,7 @@ public class ApiTests extends TestBase {
         );
 
         step("Check response", () -> {
+            assertThat(response).isNotNull();
             assertThat(response.getId()).isNotNull();
             assertThat(response.getName()).isEqualTo("morpheus");
             assertThat(response.getJob()).isEqualTo("leader");
@@ -45,9 +46,11 @@ public class ApiTests extends TestBase {
         );
 
         step("Validate response content", () -> {
+            assertThat(response).isNotNull();
             assertThat(response.getPage()).isEqualTo(2);
             assertThat(response.getData()).isNotEmpty();
-            assertThat(response.getData().get(0).getEmail()).contains("@reqres.in");
+            User firstUser = response.getData().get(0);
+            assertThat(firstUser.getEmail()).contains("@reqres.in");
         });
     }
 
@@ -59,21 +62,25 @@ public class ApiTests extends TestBase {
                         .get("/users/1")
                         .then()
                         .spec(Spec.responseSpecification200)
-                        .extract().as(UserResponse.class) // Десериализуем в UserResponse
+                        .extract().as(UserResponse.class)
         );
 
         step("Check user data", () -> {
-            assertThat(response.getData().getId()).isEqualTo(1);
-            assertThat(response.getData().getEmail()).isEqualTo("george.bluth@reqres.in");
-            assertThat(response.getData().getFirst_name()).isEqualTo("George");
-            assertThat(response.getData().getLast_name()).isEqualTo("Bluth");
-            assertThat(response.getData().getAvatar()).isEqualTo("https://reqres.in/img/faces/1-image.jpg");
+            assertThat(response).isNotNull();
+            User userData = response.getData();
+            assertThat(userData).isNotNull();
+            assertThat(userData.getId()).isEqualTo(1);
+            assertThat(userData.getEmail()).isEqualTo("george.bluth@reqres.in");
+            assertThat(userData.getFirstName()).isEqualTo("George");
+            assertThat(userData.getLastName()).isEqualTo("Bluth");
+            assertThat(userData.getAvatar()).isEqualTo("https://reqres.in/img/faces/1-image.jpg");
 
-            assertThat(response.getSupport().getUrl()).isNotEmpty();
-            assertThat(response.getSupport().getText()).contains("Content Caddy");
+            Support support = response.getSupport();
+            assertThat(support).isNotNull();
+            assertThat(support.getUrl()).isNotEmpty();
+            assertThat(support.getText()).contains("Content Caddy");
         });
     }
-
 
     @Test
     void singleUserNotFoundTest() {
@@ -104,9 +111,9 @@ public class ApiTests extends TestBase {
         );
 
         step("Check response", () -> {
-            assertThat(response.getId()).isEqualTo(4); // Сравниваем с числом
+            assertThat(response).isNotNull();
+            assertThat(response.getId()).isEqualTo(4);
             assertThat(response.getToken()).isNotNull();
         });
     }
-
 }
